@@ -1,0 +1,44 @@
+version: '3'
+services:
+  ldap:
+    container_name: cinder_ldap
+    image: osixia/openldap:1.2.1
+    volumes:
+      - /cinder/ldap/database:/var/lib/ldap
+      - /cinder/ldap/config:/etc/ldap/slapd.d
+    ports:
+      - "389:389"
+    environment:
+      LDAP_ORGANISATION: "cinder"
+      LDAP_DOMAIN: "cinder.org"
+      LDAP_ADMIN_PASSWORD: "admin123"
+  gitlab:
+    build: ./gitlab
+    container_name: cinder_gitlab
+    restart: unless-stopped
+    privileged: true
+    volumes: 
+      - /cinder/gitlab/config:/etc/gitlab
+      - /cinder/gitlab/logs:/var/log/gitlab
+      - /cinder/gitlab/data:/var/opt/gitlab
+    ports: 
+      - "8443:443"
+      - "8080:80"
+      - "8022:22"
+    environment: 
+      GITLAB_ROOT_PASSWORD: admin123
+      GITLAB_OMNIBUS_CONFIG: "from_file('/tmp/omnibus.rb')"
+    depends_on:
+      - ldap
+  # jenkins:
+  #   build: ./jenkins
+  #   container_name: cinder_jenkins
+  #   restart: unless-stopped
+  #   volumes: 
+  #     - /cinder/jenkins:/var/jenkins_home
+  #   ports:
+  #    - "8081:8080"
+  #    - "50000:50000"
+  #   environment: 
+  #     JENKINS_OPTS: --prefix=/jenkins --argumentsRealm.passwd.admin=admin123 --argumentsRealm.roles.user=admin --argumentsRealm.roles.admin=admin
+  #     JAVA_OPTS: -Djenkins.install.runSetupWizard=false
