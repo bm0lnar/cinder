@@ -30,15 +30,17 @@ services:
       GITLAB_OMNIBUS_CONFIG: "from_file('/tmp/omnibus.rb')"
     depends_on:
       - ldap
-  # jenkins:
-  #   build: ./jenkins
-  #   container_name: cinder_jenkins
-  #   restart: unless-stopped
-  #   volumes: 
-  #     - /cinder/jenkins:/var/jenkins_home
-  #   ports:
-  #    - "8081:8080"
-  #    - "50000:50000"
-  #   environment: 
-  #     JENKINS_OPTS: --prefix=/jenkins --argumentsRealm.passwd.admin=admin123 --argumentsRealm.roles.user=admin --argumentsRealm.roles.admin=admin
-  #     JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+  jenkins:
+    build: ./jenkins
+    container_name: cinder_jenkins
+    restart: unless-stopped
+    volumes: 
+      - /cinder/jenkins:/var/jenkins_home
+    ports:
+     - "8081:8080"
+     - "50000:50000"
+    environment: 
+      JENKINS_OPTS: --prefix=/jenkins --argumentsRealm.passwd.admin=admin123 --argumentsRealm.roles.user=admin --argumentsRealm.roles.admin=admin
+      JAVA_OPTS: -Djenkins.install.runSetupWizard=false
+    depends_on:
+      - ldap
