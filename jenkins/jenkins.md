@@ -7,6 +7,5 @@ jenkins_1  | This may also be found at: /var/jenkins_home/secrets/initialAdminPa
 
 sudo mkdir /cinder
 sudo mkdir /cinder/jenkins
-cp config.xml /cinder/jenkins
 sudo chown -R 1000 /cinder/jenkins
 sudo systemctl restart docker
